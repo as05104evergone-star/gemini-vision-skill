@@ -74,6 +74,24 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "E:\TRAE SOLO\View_Skill\g.p
 | Pro model refuses / needs BotGuard | Retry; or retry with `-m flash`. |
 | Proxy change | Edit `proxy.url` in `E:\TRAE SOLO\View_Skill\config.json` (e.g. `http://127.0.0.1:PORT`). |
 
+## Re-auth fallback (when automated login fails or is flagged)
+
+`g.ps1 login` automation can fail with "Gemini did not expose a live SNlM0e token"
+(often after risk prompts or repeated automation). Restore the session from the
+user's own working browser instead:
+
+1. User copies `__Secure-1PSID`, `__Secure-1PSIDTS` (optionally `__Secure-1PSIDCC`)
+   from their logged-in Edge at gemini.google.com (F12 → Application → Cookies).
+2. Write them into `E:\TRAE SOLO\View_Skill\.home\.gemini-web-mcp-cli\profiles\default\auth.json`
+   under `cookies`; set `tokens.snlm0e`/`cfb2h`/`fdrfje` to empty strings.
+3. Fetch a fresh access token (needs the Google proxy):
+   `powershell -NoProfile -Command "$s=Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings'; if($s.ProxyEnable -and $s.ProxyServer){$p=$s.ProxyServer;if($p -notmatch '^https?://'){$p='http://'+$p};$env:HTTPS_PROXY=$p}; & 'E:\TRAE SOLO\View_Skill\.uv\tools\gemini-web-mcp-cli\Scripts\python.exe' 'E:\TRAE SOLO\View_Skill\test\refresh_tokens.py'"`
+4. `g.ps1 login --check` → expect "Authentication is valid."
+
+Session cookies are account credentials: never print, log, or commit them.
+If they leak or are no longer needed, tell the user to sign out the Google
+session (google.com account security → sign out all) to invalidate them.
+
 ## Discipline & risk (important)
 
 - **Low-frequency personal use only.** This channel reverse-engineers the Gemini
