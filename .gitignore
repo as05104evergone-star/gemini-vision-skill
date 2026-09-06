@@ -1,0 +1,13 @@
+# Local runtime & auth data (credentials — never upload)
+.home/
+.gh/
+
+# Local toolchain (uv-managed binaries)
+.uv/
+tools/
+
+# Local smoke-test assets
+test/
+
+# Misc
+*.log

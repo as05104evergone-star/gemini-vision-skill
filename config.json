@@ -1,0 +1,12 @@
+{
+  "proxy": {
+    "enabled": true,
+    "auto_from_registry": true,
+    "url": ""
+  },
+  "gemcli": {
+    "model": "pro",
+    "timeout_seconds": 300,
+    "path": ""
+  }
+}
